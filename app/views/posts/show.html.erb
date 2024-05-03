@@ -1,0 +1,17 @@
+<!-- Display a notice if there is one -->
+<p style="color: green"><%= notice %></p>
+
+<!-- Post Content -->
+<article>
+  <h1><%= @post.title %></h1>
+  <div>
+    <%= sanitize @post.content, tags: %w(p br ul ol li h1 h2 h3 h4 h5 h6 em strong blockquote pre code img a sub sup), attributes: %w(href src alt title style) %>
+  </div>
+</article>
+
+<!-- Navigation Links -->
+<div>
+  <%= link_to 'Edit this post', edit_post_path(@post), class: 'btn btn-primary' %> |
+  <%= link_to 'Back to posts', posts_path, class: 'btn btn-secondary' %>
+  <%= button_to 'Destroy this post', @post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+</div>

@@ -1,0 +1,79 @@
+<%= form_with(model: post, local: true) do |form| %>
+  <div class="field">
+    <%= form.label :title, 'Title' %>
+    <%= form.text_field :title, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :content, 'Content' %>
+    <div id="editor"></div>
+    <%= form.hidden_field :content, id: 'hiddenContent' %>
+  </div>
+
+  <%= form.submit 'Save Post', class: 'btn btn-primary' %>
+<% end %>
+
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+document.addEventListener('turbo:load', function() {
+  if (window.editorInstance) {
+    window.editorInstance.destroy(); // Destroy the instance if it exists to avoid duplicates
+  }
+
+  window.editorInstance = new toastui.Editor({
+    el: document.querySelector('#editor'),
+    initialEditType: 'markdown',
+    previewStyle: 'vertical',
+    initialValue: '<%= @post.content || "Enter text here..." %>',
+    toolbarItems: [
+      ['bold', 'italic', 'strike'],
+      ['ul', 'ol', 'task', 'indent', 'outdent'],
+      ['table', 'image', 'link'],
+      ['code', 'codeblock'],
+      [{ // Subscript button
+        el: createButton('subscript', 'Sub', () => toggleFormat('subscript')),
+        command: 'subscript',
+        tooltip: 'Toggle subscript'
+      }, { // Superscript button
+        el: createButton('superscript', 'Sup', () => toggleFormat('superscript')),
+        command: 'superscript',
+        tooltip: 'Toggle superscript'
+      }]
+    ]
+  });
+
+  document.querySelector('form').addEventListener('submit', function() {
+    var content = window.editorInstance.getMarkdown();
+    document.getElementById('hiddenContent').value = content;
+  });
+
+  function createButton(name, text, onClick) {
+    const button = document.createElement('button');
+    button.innerHTML = text;
+    button.addEventListener('click', onClick);
+    button.setAttribute('type', 'button');
+    button.className = 'toastui-editor-toolbar-button ' + name;
+    return button;
+  }
+
+  function toggleFormat(type) {
+    const range = window.editorInstance.getSelection();
+    const text = window.editorInstance.getSelectedText();
+    const tag = type === 'subscript' ? 'sub' : 'sup';
+    if (text.indexOf('<' + tag + '>') === -1) {
+      console.log('=================================== -1 =============================')
+      window.editorInstance.insertText('<' + tag + '>' + text + '</' + tag + '>', {
+        start: range[0],
+        end: range[2] + 11 // Adjust for tag length
+      });
+    } else {
+      console.log('############################   not -1 ######################################')
+      const strippedText = text.replace('<' + tag + '>', '').replace('</' + tag + '>', '');
+      window.editorInstance.insertText(strippedText, {
+        start: range[0],
+        end: range[1] - 11 // Adjust for tag length
+      });
+    }
+  }
+});
+</script>
