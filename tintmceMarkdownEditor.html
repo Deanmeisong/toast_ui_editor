@@ -27,12 +27,32 @@
       // Links
       html = html.replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>");
 
+      // Subscript
+      html = html.replace(/~(.*)~/gim, "<sub>$1</sub>");
+
+      // Superscript
+      html = html.replace(/\^(.*)\^/gim, "<sup>$1</sup>");
+
       return html.trim();
     }
 
     var turndownService = new TurndownService();
     turndownService.options.headingStyle = 'atx'; // Use ATX style for headers
     turndownService.options.emDelimiter = '*'; // Use asterisks for italic text
+
+    turndownService.addRule('sub', {
+      filter: 'sub',
+      replacement: function(content) {
+        return '~' + content + '~';
+      }
+    });
+
+    turndownService.addRule('sup', {
+      filter: 'sup',
+      replacement: function(content) {
+        return '^' + content + '^';
+      }
+    });
 
     tinymce.init({
       selector: '#editor',
