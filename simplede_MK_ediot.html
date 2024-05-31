@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleMDE with Special Characters Example</title>
+    <!-- SimpleMDE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+</head>
+<body>
+    <div>
+        <textarea id="editor"></textarea>
+    </div>
+
+    <!-- SimpleMDE JS -->
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <!-- Markdown-it and Plugins JS -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it-sub/dist/markdown-it-sub.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it-sup/dist/markdown-it-sup.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var simplemde = new SimpleMDE({
+                element: document.getElementById("editor"),
+                autosave: {
+                    enabled: true,
+                    uniqueId: "editor_autosave",
+                    delay: 1000,
+                },
+                spellChecker: false,
+                forceSync: true,
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "code", "link", "image", "table", "|",
+                    {
+                        name: "subscript",
+                        action: function customSubscriptFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('~~');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-subscript",
+                        title: "Insert Subscript",
+                    },
+                    {
+                        name: "superscript",
+                        action: function customSuperscriptFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('^^');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-superscript",
+                        title: "Insert Superscript",
+                    },
+                    "|",
+                    {
+                        name: "male",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('♂');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-mars",
+                        title: "Insert Male Symbol",
+                    },
+                    {
+                        name: "female",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('♀');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-venus",
+                        title: "Insert Female Symbol",
+                    },
+                    {
+                        name: "plus-minus",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('±');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-plus-minus",
+                        title: "Insert Plus-Minus Symbol",
+                    },
+                    {
+                        name: "en-dash",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('–');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-minus",
+                        title: "Insert En Dash",
+                    },
+                    {
+                        name: "degree",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('°');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-circle",
+                        title: "Insert Degree Symbol",
+                    },
+                    {
+                        name: "multiplication",
+                        action: function customSpecialCharFunction(editor) {
+                            var cm = editor.codemirror;
+                            var cursorPos = cm.getCursor();
+                            cm.replaceSelection('×');
+                            cm.setCursor(cursorPos.line, cursorPos.ch + 1);
+                            cm.focus();
+                        },
+                        className: "fa fa-times",
+                        title: "Insert Multiplication Symbol",
+                    },
+                    "preview", "side-by-side", "fullscreen"
+                ],
+                status: ["autosave", "lines", "words", "cursor"],
+                previewRender: function(plainText) { // Async method
+                    // Initialize markdown-it with plugins
+                    var md = window.markdownit()
+                                .use(window.markdownitSub)
+                                .use(window.markdownitSup);
+                    
+                    // Render Markdown to HTML using markdown-it
+                    return md.render(plainText);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
